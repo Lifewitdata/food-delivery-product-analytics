@@ -1,0 +1,26 @@
+{
+  "raw_rows": 15000,
+  "clean_rows": 15000,
+  "quarantined_rows": 0,
+  "reconciliation": "raw = clean + quarantined",
+  "cancelled": 2003,
+  "cancelled_rate": 0.1335,
+  "delayed": 1420,
+  "refunds": 618,
+  "avg_delivery_time_min": 94.14,
+  "gmv_sar_delivered_only": 5797900.58,
+  "aov_sar_delivered_only": 446.1,
+  "distinct_customers": 7309,
+  "distinct_restaurants": 350,
+  "distinct_riders": 800,
+  "events": 60000,
+  "cities": {
+    "Dammam": 7520,
+    "Jeddah": 3757,
+    "Riyadh": 3723
+  },
+  "ab_control_customers": 3601,
+  "ab_treatment_customers": 3708,
+  "source": "Kaggle Food Delivery Operations and Customer Analytics (deepeshkansotia), realistic synthetic, adapted to Saudi Arabia, NOT real company data",
+  "seed": 42
+}

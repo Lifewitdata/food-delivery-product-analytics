@@ -1,0 +1,8 @@
+query,rows,bigquery_duckdb_vs_postgres,postgres_vs_redshift_port
+01_data_quality,11,True,True
+02_kpi_scorecard,12,True,True
+03_funnel,9,True,True
+04_growth,51,True,True
+05_delivery,56,True,True
+06_retention,78,True,True
+07_ab_scorecard,2,True,True

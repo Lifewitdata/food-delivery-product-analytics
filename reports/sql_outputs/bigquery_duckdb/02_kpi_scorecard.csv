@@ -1,0 +1,13 @@
+metric,value
+aov_sar,446.1
+avg_delivery_min,93.88
+cancellation_rate,0.1335
+cancelled_orders,2003.0
+customers,7309.0
+delivered_orders,12997.0
+gmv_sar,5797900.58
+on_time_rate,0.9051
+orders,15000.0
+orders_per_customer,2.0523
+refunds,618.0
+repeat_rate,0.6073

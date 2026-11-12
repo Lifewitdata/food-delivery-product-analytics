@@ -1,0 +1,4 @@
+city_tier,city,orders,rule
+1,Riyadh,3723,"tier 1 = Riyadh, tier 2 = Jeddah, tier 3 = Dammam (3 cities only, no invented 4th city)"
+2,Jeddah,3757,"tier 1 = Riyadh, tier 2 = Jeddah, tier 3 = Dammam (3 cities only, no invented 4th city)"
+3,Dammam,7520,"tier 1 = Riyadh, tier 2 = Jeddah, tier 3 = Dammam (3 cities only, no invented 4th city)"

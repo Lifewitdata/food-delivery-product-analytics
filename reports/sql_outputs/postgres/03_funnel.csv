@@ -1,0 +1,10 @@
+city,device,browse_sessions,cart_sessions,checkout_sessions,delivered_sessions,browse_to_cart,cart_to_checkout,checkout_to_delivered,promo_share_at_checkout
+Dammam,Android,3438,3438,3438,3010,1.0000,1.0000,0.8755,0.4287
+Dammam,iOS,3336,3336,3336,2880,1.0000,1.0000,0.8633,0.4236
+Dammam,Web,746,746,746,638,1.0000,1.0000,0.8552,0.4276
+Jeddah,Android,1706,1706,1706,1471,1.0000,1.0000,0.8623,0.4226
+Jeddah,iOS,1688,1688,1688,1468,1.0000,1.0000,0.8697,0.4141
+Jeddah,Web,363,363,363,312,1.0000,1.0000,0.8595,0.4187
+Riyadh,Android,1659,1659,1659,1426,1.0000,1.0000,0.8596,0.4340
+Riyadh,iOS,1702,1702,1702,1477,1.0000,1.0000,0.8678,0.4148
+Riyadh,Web,362,362,362,315,1.0000,1.0000,0.8702,0.3950

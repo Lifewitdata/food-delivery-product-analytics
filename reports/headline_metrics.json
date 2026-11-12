@@ -1,0 +1,18 @@
+{
+  "orders":15000,
+  "customers":7309,
+  "gmv_sar":5797900.5800000001,
+  "aov_sar":446.1,
+  "cancellation_rate":0.1335,
+  "on_time_rate":0.9051,
+  "avg_delivery_min":93.88,
+  "repeat_rate":0.6073,
+  "month3_retention":0.1281,
+  "srm_p":0.2107,
+  "sim_conversion_lift_pp":2.44,
+  "sim_conversion_p":0.0000035994,
+  "sim_rpu_diff_sar":18.03,
+  "sim_rpu_p":0.1319,
+  "verdict_observed":"REVISE AND RETEST",
+  "verdict_simulated":"LAUNCH"
+}

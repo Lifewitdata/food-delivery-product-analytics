@@ -1,0 +1,12 @@
+rule,rows_checked,rows_failed,action
+delivery_time_outside_0_300,15000.0,0.0,quarantine
+duplicate_order_id,15000.0,0.0,quarantine
+negative_distance,15000.0,0.0,quarantine
+negative_order_value,15000.0,0.0,quarantine
+negative_preparation_time,15000.0,0.0,quarantine
+null_customer_rating,15000.0,150.0,"keep null, flag"
+null_delivery_partner_rating,15000.0,150.0,"keep null, flag"
+null_order_id,15000.0,0.0,quarantine
+null_tip_amount,15000.0,150.0,"keep null, flag"
+order_date_outside_2026,15000.0,0.0,quarantine
+payment_identity_gap_gt_1_sar,14850.0,0.0,quarantine

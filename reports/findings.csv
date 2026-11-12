@@ -1,0 +1,10 @@
+area,finding,so_what,next_step
+Growth,"GMV is flat: best month Aug SAR 498,021, worst Apr SAR 469,838, spread 6.0%",No seasonality to plan around in this base; any real growth claim needs real dates,Re-run on live order dates and add Ramadan / Eid / payday markers
+Growth,"Dammam has 7,520 orders (50.3% of GMV); AOV gap across cities only SAR 2.36","Cities differ in volume, not basket, so city growth is an acquisition problem",Split city growth into new vs returning customers before budgeting acquisition
+Promotions,Promo orders AOV SAR 445.78 vs 446.32 without (p = 0.75),Promo codes do not lift basket size,"Test promos on frequency / reactivation instead of basket size, with a holdout"
+Customers,Premium AOV SAR 481.87 vs regular 431.97 (+11.6%),Premium customers are the highest-value segment per order,Size premium upgrade conversion and test a premium trial for high-frequency regular users
+Delivery,"Distance drives delivery time: r = 0.86, 2.5 min per km; prep r = 0.39","Delivery radius and kitchen prep are the controllable levers, not weather",Simulate a tighter radius for >30 km orders and track prep time per restaurant
+Delivery,47.8% of orders miss ETA but only 9.47% are flagged delayed,"The late flag understates lateness and does not respond to traffic, weather or distance",Agree one SLA definition with Logistics; report ETA breach next to the flag
+Riders,Rider experience vs efficiency: Pearson r = 0.42 (p < 0.001),Experienced riders are more efficient; new riders are the weak spot,Pair riders in their first year with high-efficiency zones and track the gap
+Retention,"Repeat rate 60.7%, 2.05 orders per customer, month-3 retention 12.8%",Flat retention curve; most value is from repeat customers,"Build an onboarding nudge for the 2,870 one-order customers and A/B it"
+Funnel,Checkout to delivered 86.65%; cancellation 13.35%; no pre-checkout drop-off in the event data,Cancellation is the only funnel loss we can measure,Log browse sessions that do not convert so the top of the funnel is measurable
