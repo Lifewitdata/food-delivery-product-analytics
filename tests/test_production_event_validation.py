@@ -40,3 +40,13 @@ def test_quarantines_unknown_event_and_bad_json(schema):
 def test_missing_required_columns_raises(schema):
     with pytest.raises(ValueError,match="Missing required columns"):
         validate_events(pd.DataFrame({"event_id":["e1"]}),schema)
+
+
+def test_delivered_alias_is_not_mapped_to_order_placed(schema):
+    schema["canonical_events"].append("order_delivered")
+    schema["event_name_aliases"]["delivered"]="order_delivered"
+    d=pd.DataFrame([{"event_id":"e2","session_id":"s2","event_name":"delivered",
+      "event_timestamp":"2026-10-01T10:00:00Z","platform":"ios","city":"Riyadh"}])
+    accepted,rejected,_=validate_events(d,schema)
+    assert rejected.empty
+    assert accepted.iloc[0].event_name=="order_delivered"
