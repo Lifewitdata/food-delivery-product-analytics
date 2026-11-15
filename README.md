@@ -136,5 +136,50 @@ The generated non-purchasing sessions are synthetic demonstrations, not measured
 
 ## Production customer-event ingestion
 
-A privacy-conscious CSV event contract and validator are available for a real anonymised product-event export. See [Production Event Onboarding](docs/PRODUCTION_EVENT_ONBOARDING.md), [event schema](config/production_event_schema.json), and [CSV template](data/templates/production_events_template.csv). Validate a real export with `python -m scripts.validate_production_events --input /secure/path/events_export.csv`. Do not commit real customer data to this repository. No production customer data is included; the existing funnel generator remains explicitly synthetic.
-\n\n## Dashboard pages and operational checks\n\nRun `python -m scripts.run_product_analytics` before opening the app. The Streamlit multipage app includes the original Executive/Growth/Delivery/Experiment tabs plus Product Funnel, Unit Economics, Customer Lifecycle, Delivery Risk, Capacity Scenario, Experiment Design, Restaurant Performance and Data Quality Monitoring. The restaurant page explicitly warns that restaurant identifiers and city relationships are seeded. The data-quality page recalculates integrity checks from the local dataset and exports the results; it is not a live production monitor. The primary dashboard is Streamlit, not Looker Studio. Public hosting is optional and should only be considered after confirming data redistribution rights.\n\nRedshift SQL is executed locally through PostgreSQL as a dialect-port comparison. It is not an AWS Redshift service test. Live AWS Redshift, BigQuery and Looker Studio are not required to run or demonstrate this local portfolio project.\n
+The project includes a privacy-conscious event schema, CSV template and validation script to prepare an anonymised product-event export for analysis. This is an ingestion-ready contract; it does **not** mean a production event source is connected or that production customer data is present.
+
+- [Production event schema](config/production_event_schema.json)
+- [CSV template](data/templates/production_events_template.csv)
+- [Validator](scripts/validate_production_events.py)
+
+Validate an authorised, anonymised export stored outside the repository:
+
+```bash
+python -m scripts.validate_production_events --input /secure/path/events_export.csv
+```
+
+The validator checks the required event fields, event names, timestamps, duplicate event identifiers and JSON properties. Invalid rows are quarantined for review. Keep real customer data out of Git, screenshots and public issue comments. The existing demonstration funnel remains explicitly synthetic until a genuine event export and tracking definitions are supplied.
+
+## Dashboard pages and operational analytics
+
+Generate the local analytics outputs before starting the dashboard:
+
+```bash
+python -m scripts.run_product_analytics
+streamlit run dashboard/app.py
+```
+
+The Streamlit dashboard is the primary BI deliverable. It preserves the original Executive, Growth, Delivery and Experiment views and adds:
+
+- Product Funnel
+- Unit Economics
+- Customer Lifecycle
+- Delivery Risk
+- Capacity Scenario
+- Experiment Design
+- Restaurant Performance
+- Data Quality Monitoring
+
+The dashboard provides analytical views, metric context and CSV exports where applicable. Restaurant identifiers and their city relationships are seeded demonstration values. The data-quality page recalculates checks against the local dataset; it is not a continuously running production monitor. Funnel sessions, financial assumptions and rider-capacity inputs are labelled synthetic or illustrative wherever they are used.
+
+Public dashboard hosting is optional. Before publishing, confirm the source dataset's redistribution rights and ensure no private or customer-level information is included.
+
+## SQL validation without cloud infrastructure
+
+The project is designed to run locally and does not require AWS credentials, an AWS Redshift cluster, a Google Cloud project or Looker Studio.
+
+- **PostgreSQL:** the warehouse queries are executed against a local PostgreSQL 16 instance.
+- **BigQuery dialect:** the BigQuery-style queries are exercised locally in DuckDB with compatibility helpers.
+- **Redshift dialect:** the Redshift query-port is compared locally through PostgreSQL. This checks query logic and result parity for the supported query bodies; it is **not** a live Amazon Redshift service test.
+
+These local checks are the project's cloud-free validation path. They do not claim live cloud deployment, cloud performance testing or production-source connectivity.
