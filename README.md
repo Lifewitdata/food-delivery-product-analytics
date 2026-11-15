@@ -66,7 +66,7 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 
 Or create a Python 3.11 venv and use `python -m pip install -r requirements.txt`. On macOS/Linux substitute `.venv/bin/python`. `pgserver` bundles PostgreSQL binaries on supported platforms; if it cannot run on yours, DuckDB and dashboard still work, but the live PostgreSQL verification is unavailable until you install PostgreSQL yourself.
 
-Open http://127.0.0.1:8501 in your browser. Four tabs: Executive, Growth, Delivery and Operations, Experiment. City, month and customer-type filters change operational KPIs and charts. The experiment's observed scorecard follows filters; inferential tables explicitly stay full-sample to avoid post-hoc peeking.
+Open http://127.0.0.1:8501 in your browser. The original four tabs remain: Executive, Growth, Delivery and Operations, Experiment. Six additional analytical pages cover Product Funnel, Unit Economics, Customer Lifecycle, Delivery Risk, Capacity Scenario and Experiment Design; the latest additions are Restaurant Performance and Data Quality Monitoring. The original executive dashboard supports city, month and customer-type filters and a filtered-order CSV export. Supporting pages include their own filters where relevant, metric explanations and CSV exports. The experiment's observed scorecard follows filters; inferential tables explicitly stay full-sample to avoid post-hoc peeking.
 
 ### Notebook
 
@@ -105,7 +105,7 @@ Optional future Redshift: upload CSV/JSON to your own S3 bucket, replace placeho
 - `notebooks/`: executed exploratory analysis, conversion checks, quality, growth, delivery, retention, simulation and statistics.
 - `reports/`: additive monthly KPIs, DQ, nine findings, A/B results, seven PNGs, SQL outputs and slide deck.
 - `sql/`: 7 analyses x 3 dialects plus PostgreSQL/Redshift schema/load templates.
-- `tests/`: 21 tests covering data, currency conversion, event sequences, SQL parity, and dashboard filters.
+- `tests/`: Automated tests cover data, currency conversion, event sequences, SQL parity, dashboard filters and page contracts, funnel generation, unit economics, customer lifecycle, experiment utilities, capacity scenarios and production-event validation.
 - [Data dictionary](docs/data_dictionary.md); [Looker Studio specification](docs/looker_studio_spec.md) (spec only).
 
 Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTest; notebook executed with no errors. Browser opened and baseline KPIs checked visually; further automated filter clicks were blocked by the tool permission layer, so filter verification used AppTest, not browser clicks. The browser console reported Vega-Lite version/scale warnings; visual verification of all charts remains incomplete. Cloud execution and full visual chart verification are not claimed.
@@ -115,3 +115,26 @@ Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTes
 Seeded dates agree with source month but not source weekday. Every restaurant has orders across all three cities, irrespective of its name; restaurant ranking therefore excludes city. Customer IDs are randomly generated, and the flat cohort curve is not evidence of real retention. Events always start with a completed browse/cart/checkout chain, so no pre-checkout conversion can be estimated. The supplied notes incorrectly attribute all 150 missing tips/ratings to cancellation: only 19 are cancelled. Keep nulls; do not fill zero. Refunds are counted, not deducted from GMV, because refund amounts are absent.
 
 No live Redshift, BigQuery, Looker, AWS, or R work is claimed. Public publishing remains your decision, after confirming dataset redistribution rights.
+
+## Product analytics extensions (new branch)
+
+This improvement branch adds an additive, local analytics layer without replacing the original analysis:
+
+- Session-level event generator and funnel summary: `python -m scripts.build_product_sessions` then `python -m scripts.analyze_product_funnel`.
+- Scenario unit economics: `python -m scripts.build_unit_economics`. Assumptions live in `config/unit_economics_assumptions.json`; outputs are illustrative and are not actual profit.
+- Customer recency/frequency and cohort descriptors: `python -m scripts.build_customer_lifecycle`.
+- Retrospective delivery ETA exception queue: `python -m scripts.build_delivery_risk`.
+- Run all additive outputs in order: `python -m scripts.run_product_analytics`.
+- New Streamlit pages are under `dashboard/pages/`; the original four-tab dashboard remains intact.
+- CI workflow: `.github/workflows/analytics-ci.yml`.
+- Experiment design requirements: [docs/EXPERIMENTATION_PLAYBOOK.md](docs/EXPERIMENTATION_PLAYBOOK.md).
+
+Earlier branch CI passed the test suite, end-to-end analytics runner and Python compilation. The latest dashboard additions are being validated by the workflow triggered from the current branch head; do not treat those new additions as verified until that run completes. This validates the local demonstration pipeline, not production data quality or live cloud compatibility.
+
+The generated non-purchasing sessions are synthetic demonstrations, not measured customer behaviour. Unit-economics outputs use explicit placeholder assumptions and must not be represented as finance actuals. Customer segments are descriptive, not a validated churn model. Delivery exceptions are retrospective and not live dispatch alerts.
+
+
+## Production customer-event ingestion
+
+A privacy-conscious CSV event contract and validator are available for a real anonymised product-event export. See [Production Event Onboarding](docs/PRODUCTION_EVENT_ONBOARDING.md), [event schema](config/production_event_schema.json), and [CSV template](data/templates/production_events_template.csv). Validate a real export with `python -m scripts.validate_production_events --input /secure/path/events_export.csv`. Do not commit real customer data to this repository. No production customer data is included; the existing funnel generator remains explicitly synthetic.
+\n\n## Dashboard pages and operational checks\n\nRun `python -m scripts.run_product_analytics` before opening the app. The Streamlit multipage app includes the original Executive/Growth/Delivery/Experiment tabs plus Product Funnel, Unit Economics, Customer Lifecycle, Delivery Risk, Capacity Scenario, Experiment Design, Restaurant Performance and Data Quality Monitoring. The restaurant page explicitly warns that restaurant identifiers and city relationships are seeded. The data-quality page recalculates integrity checks from the local dataset and exports the results; it is not a live production monitor. The primary dashboard is Streamlit, not Looker Studio. Public hosting is optional and should only be considered after confirming data redistribution rights.\n\nRedshift SQL is executed locally through PostgreSQL as a dialect-port comparison. It is not an AWS Redshift service test. Live AWS Redshift, BigQuery and Looker Studio are not required to run or demonstrate this local portfolio project.\n
