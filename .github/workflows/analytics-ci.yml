@@ -20,5 +20,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run unit and repository tests
         run: python -m pytest -q
+      - name: Run end-to-end product analytics pipeline
+        run: python -m scripts.run_product_analytics
       - name: Compile analytics modules
         run: python -m compileall -q scripts dashboard
