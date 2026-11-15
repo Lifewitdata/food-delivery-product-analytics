@@ -9,6 +9,7 @@ COMMANDS=[
  [sys.executable,"-m","scripts.build_unit_economics"],
  [sys.executable,"-m","scripts.build_customer_lifecycle"],
  [sys.executable,"-m","scripts.build_delivery_risk"],
+ [sys.executable,"-m","scripts.build_capacity_scenarios"],
 ]
 def main():
     for command in COMMANDS:
