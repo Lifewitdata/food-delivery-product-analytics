@@ -1,66 +1,67 @@
 # Product Analytics Platform — implementation plan
 
-## Working principles
-- Preserve existing raw data, processed orders, notebook, SQL, reports and dashboard unless a reviewed change is necessary.
-- Never describe generated data or simulated effects as observed customer behaviour.
-- Every KPI must define its grain, numerator, denominator, time window and business owner.
-- Every pipeline stage must be reproducible, tested and documented.
-- Cloud services are not considered live until execution against the actual service is demonstrated.
+## Current status
 
-## Workstreams and acceptance criteria
+The additive implementation branch is technically validated:
+- GitHub Actions: 36 tests passed.
+- End-to-end local analytics runner completed successfully against the repository dataset.
+- Python modules compiled successfully.
+- Latest validation run: https://github.com/Lifewitdata/food-delivery-product-analytics/actions/runs/43713151837
 
-| Workstream | Deliverables | Acceptance criteria |
+This validates code paths and reproducibility on the supplied dataset. It does not validate production business assumptions, live cloud services, real customer behaviour, or production deployment.
+
+## Completed on this branch
+
+| Workstream | Delivered | Validation / limitation |
 |---|---|---|
-| Session funnel | Session-grain events, non-converting journeys, funnel SQL and dashboard | Session counts reconcile; conversion denominators use eligible sessions; synthetic provenance is explicit |
-| Unit economics | Commission, delivery cost, payment fees, promo subsidy, refunds and contribution margin | Assumptions are parameterised; GMV is not labelled revenue or profit; unknown costs remain explicit |
-| Customer lifecycle | RFM, repeat intervals, cohorts, churn-risk baseline and LTV scenarios | Customer grain is stable; time split prevents leakage; LTV is labelled modelled |
-| Experimentation | Eligibility, assignment, SRM, power, primary metric and guardrails | Observed and simulated results are separate; repeated users are handled at customer/cluster grain |
-| Delivery operations | ETA breach, SLA definitions, peak demand, capacity scenarios and exception queue | Thresholds configurable; no invented real-time alerts |
-| Dashboard | Executive, product funnel, growth, customer, finance, delivery and experiment views | Filters are consistent; metrics reconcile to tested outputs |
-| Automation | CI tests, data validation, scheduled-run entry point and deployment instructions | Clean install and automated tests pass; secrets are never committed |
-| Governance | Data dictionary, lineage, assumptions, source licence and metric definitions | Every derived field has provenance and limitations are visible |
+| Session funnel | Session generator, explicitly labelled simulated non-buyers, funnel metrics, SQL and dashboard | Runs end-to-end; conversion rates are not real platform rates |
+| Unit economics | Configurable commission, delivery, payment, promotion and refund scenario | Runs end-to-end; assumptions are illustrative, not Finance actuals |
+| Customer lifecycle | Customer recency, frequency, spend, repeat flag and cohort descriptors | Descriptive only; no validated churn model or predictive LTV |
+| Experimentation | Sample-size helper, customer-grain two-arm analysis, SRM check, CI and playbook | Utilities tested; no real randomised experiment data supplied |
+| Delivery operations | Retrospective ETA exception queue and dashboard | Not live dispatch or rider telemetry |
+| Capacity | Hourly demand/capacity scenario and dashboard | Rider supply is an explicit scenario input, not actual shifts |
+| Dashboard | Original dashboard preserved; six additional Streamlit pages | Local code is present; public deployment and complete visual QA remain |
+| Automation | GitHub Actions tests, compile and end-to-end pipeline | Latest workflow passed |
+| Documentation | Experimentation playbook, assumptions and implementation notes | Source licensing and full production metric governance still need confirmation |
 
-## Phase 1 — Session-level funnel foundation
+## Remaining work — ordered backlog
 
-The existing event file contains exactly four events per order and no sessions that failed to purchase. It cannot measure pre-checkout abandonment.
+### P1 — Replace demonstration assumptions with trustworthy data
+1. Obtain genuine session/event data including sessions that did not place an order.
+2. Obtain Finance-approved commission, delivery cost, payment fee, promotion subsidy and refund amount data.
+3. Obtain stable customer, restaurant, rider, city/zone and timestamp dimensions with documented source lineage.
+4. Obtain actual rider shifts/availability and dispatch timestamps for capacity and SLA analysis.
+5. Confirm dataset redistribution and publication rights before publishing data or screenshots.
 
-scripts/build_product_sessions.py creates a separate, reproducible demonstration layer:
-- one linked completed journey per existing order;
-- additional non-converting journeys with explicit synthetic provenance;
-- session and event identifiers, timestamps, sequence, conversion flag and nullable order ID;
-- a fixed random seed for reproducibility.
+### P2 — Strengthen analytical depth
+1. Build customer cohort retention, repeat-purchase intervals and a leakage-safe churn baseline.
+2. Build LTV scenarios with clearly defined contribution margin and validation windows.
+3. Rebuild experiment reporting around a real eligibility and assignment/exposure table; pre-register primary metric and non-inferiority guardrails.
+4. Add zone/restaurant/rider operational root-cause analysis only where reliable identifiers and source fields support it.
+5. Add reconciliation and data-quality thresholds for every KPI output.
 
-Run:
+### P3 — Productise the dashboard
+1. Run the Streamlit app locally and inspect all pages, filters, charts, empty states and downloadable outputs.
+2. Add consistent date/city/customer filters where the underlying grain supports them.
+3. Add metric definitions, data freshness, source provenance and assumptions to each relevant page.
+4. Add drill-down tables and exports for product, customer, finance and delivery exceptions.
+5. Deploy the dashboard to a hosting service only after checking access, secrets, data rights and operational cost.
+6. Build a live Looker Studio dashboard if that BI deliverable is required; the existing Looker file remains a specification, not a deployed dashboard.
 
-    python -m scripts.build_product_sessions
-    pytest -q
+### P4 — Cloud and operational readiness
+1. Validate BigQuery SQL in an actual BigQuery project.
+2. Validate Redshift DDL, COPY, permissions and query execution in an actual AWS Redshift environment.
+3. Add scheduled refresh only after selecting a real data source and execution environment.
+4. Add monitoring, run history, failure alerts, data freshness checks and documented recovery.
+5. Add environment-specific deployment instructions and secret management.
 
-Output: data/processed/product_sessions.csv.
+## How to run the current local demonstration
 
-Important: generated non-purchasing sessions enable funnel engineering demonstrations only. Their conversion rates are not estimates of real platform performance and must not be used to claim causal product lift.
+    python -m scripts.run_product_analytics
+    streamlit run dashboard/app.py
 
-## Remaining phases
-1. Build and validate funnel SQL from the new session grain.
-2. Add an assumption-driven order contribution model, keeping unknown cost components visible.
-3. Add leakage-safe customer lifecycle features and baseline models.
-4. Rework experimentation around eligibility, customer-level assignment and predeclared guardrails.
-5. Add delivery exception and capacity scenarios.
-6. Integrate tested outputs into Streamlit and add export/drill-down workflows.
-7. Add CI and clean-environment reproducibility checks.
+Generated non-purchasing sessions, financial assumptions and rider supply are explicitly simulated. Do not present these as observed business facts or production recommendations.
 
+## Merge readiness
 
-## Implemented in the improvement branch
-
-- Session event generation with synthetic non-converters and explicit provenance.
-- Session-level funnel aggregation and DuckDB SQL example.
-- Assumption-driven contribution scenario with editable JSON inputs.
-- Customer recency, frequency, spend and cohort descriptors.
-- Retrospective ETA exception analysis.
-- Hourly delivery capacity scenario with an explicit rider-supply assumption.
-- Customer-grain two-arm experiment analysis and sample-size calculation utilities.
-- New Streamlit pages for funnel, unit economics, customer lifecycle, delivery risk, capacity and experiment design.
-- GitHub Actions test/compile workflow.
-
-## Validation status
-
-The original test suite plus the new foundation tests passed on an intermediate branch commit. The additional experiment and capacity tests and the final dashboard page still require the latest branch workflow to finish successfully. Do not describe the branch as fully validated until the latest commit's CI is green and the end-to-end runner has been exercised against the full repository dataset.
+The improvement branch is CI-green, but should not be merged to main until the owner reviews the new outputs, confirms local dashboard behaviour, checks data rights and accepts the documented demonstration-data limitations. A passing CI workflow is necessary, not sufficient, for production readiness.
