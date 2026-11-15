@@ -27,7 +27,7 @@ This validates code paths and reproducibility on the supplied dataset. It does n
 ## Remaining work — ordered backlog
 
 ### P1 — Replace demonstration assumptions with trustworthy data
-1. Obtain genuine session/event data including sessions that did not place an order.
+1. Obtain genuine session/event data including sessions that did not place an order. The anonymised CSV contract, schema, template and quarantine validator are now committed; actual source export and tracking definitions are still required.
 2. Obtain Finance-approved commission, delivery cost, payment fee, promotion subsidy and refund amount data.
 3. Obtain stable customer, restaurant, rider, city/zone and timestamp dimensions with documented source lineage.
 4. Obtain actual rider shifts/availability and dispatch timestamps for capacity and SLA analysis.
