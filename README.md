@@ -106,7 +106,7 @@ Optional future Redshift: upload CSV/JSON to your own S3 bucket, replace placeho
 - `reports/`: additive monthly KPIs, DQ, nine findings, A/B results, seven PNGs, SQL outputs and slide deck.
 - `sql/`: 7 analyses x 3 dialects plus PostgreSQL/Redshift schema/load templates.
 - `tests/`: Automated tests cover data, currency conversion, event sequences, SQL parity, dashboard filters and page contracts, funnel generation, unit economics, customer lifecycle, experiment utilities, capacity scenarios and production-event validation.
-- [Data dictionary](docs/data_dictionary.md); [Looker Studio specification](docs/looker_studio_spec.md) (spec only).
+- [Data dictionary](docs/data_dictionary.md).
 
 Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTest; notebook executed with no errors. Browser opened and baseline KPIs checked visually; further automated filter clicks were blocked by the tool permission layer, so filter verification used AppTest, not browser clicks. The browser console reported Vega-Lite version/scale warnings; visual verification of all charts remains incomplete. Cloud execution and full visual chart verification are not claimed.
 
@@ -114,7 +114,7 @@ Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTes
 
 Seeded dates agree with source month but not source weekday. Every restaurant has orders across all three cities, irrespective of its name; restaurant ranking therefore excludes city. Customer IDs are randomly generated, and the flat cohort curve is not evidence of real retention. Events always start with a completed browse/cart/checkout chain, so no pre-checkout conversion can be estimated. The supplied notes incorrectly attribute all 150 missing tips/ratings to cancellation: only 19 are cancelled. Keep nulls; do not fill zero. Refunds are counted, not deducted from GMV, because refund amounts are absent.
 
-No live Redshift, BigQuery, Looker, AWS, or R work is claimed. Public publishing remains your decision, after confirming dataset redistribution rights.
+No live Redshift, BigQuery, AWS, or R work is claimed. Public publishing remains your decision, after confirming dataset redistribution rights.
 
 ## Product analytics extensions (new branch)
 
@@ -176,7 +176,7 @@ Public dashboard hosting is optional. Before publishing, confirm the source data
 
 ## SQL validation without cloud infrastructure
 
-The project is designed to run locally and does not require AWS credentials, an AWS Redshift cluster, a Google Cloud project or Looker Studio.
+The project is designed to run locally and does not require cloud credentials or paid infrastructure.
 
 - **PostgreSQL:** the warehouse queries are executed against a local PostgreSQL 16 instance.
 - **BigQuery dialect:** the BigQuery-style queries are exercised locally in DuckDB with compatibility helpers.
