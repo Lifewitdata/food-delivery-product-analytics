@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from streamlit.testing.v1 import AppTest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
