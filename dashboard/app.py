@@ -39,7 +39,7 @@ if k.empty:
     st.warning("No orders match the filters.")
     st.stop()
 
-with st.expander("KPI definitions and data scope"):\n    st.markdown("- **GMV:** delivered-order final amount paid; refunds are not deducted.\\n- **AOV:** delivered GMV / delivered orders.\\n- **Cancellation rate:** cancelled orders / all orders.\\n- **On-time rate:** delivered orders not flagged late / delivered orders.\\n- Data is synthetic demonstration data, not production customer or financial data.")\n\ntab_exec, tab_growth, tab_ops, tab_exp = st.tabs(["Executive", "Growth", "Delivery and Operations", "Experiment"])
+tab_exec, tab_growth, tab_ops, tab_exp = st.tabs(["Executive", "Growth", "Delivery and Operations", "Experiment"])
 
 with tab_exec:
     totals = k[["orders", "delivered", "cancelled", "gmv_sar", "on_time", "delivery_min_sum"]].sum()
