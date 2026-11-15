@@ -27,12 +27,12 @@ summary = view.groupby(["restaurant_id", "city", "cuisine"], dropna=False).agg(
     orders=("order_id", "nunique"),
     cancellations=("cancellation_flag", "sum"),
 ).reset_index()
-sales = delivered.groupby("restaurant_id").agg(
+sales = delivered.groupby(["restaurant_id", "city", "cuisine"], dropna=False).agg(
     delivered_orders=("order_id", "nunique"),
     gmv_sar=("final_amount_paid_sar", "sum"),
     aov_sar=("final_amount_paid_sar", "mean"),
 ).reset_index()
-summary = summary.merge(sales, on="restaurant_id", how="left")
+summary = summary.merge(sales, on=["restaurant_id", "city", "cuisine"], how="left")
 summary["delivered_orders"] = summary.delivered_orders.fillna(0).astype(int)
 summary["gmv_sar"] = summary.gmv_sar.fillna(0)
 summary["aov_sar"] = summary.aov_sar.fillna(0)
