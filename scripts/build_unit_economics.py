@@ -20,6 +20,7 @@ def build_unit_economics(orders:pd.DataFrame, assumptions:dict)->pd.DataFrame:
     if float(assumptions["delivery_cost_per_order_sar"])<0: raise ValueError("Delivery cost cannot be negative")
     d=orders.copy()
     delivered=~d.cancellation_flag.astype(bool)
+    d["is_delivered"]=delivered
     d["commission_revenue_sar"]=np.where(delivered,d.order_value_sar*assumptions["commission_rate"],0)
     d["delivery_cost_sar"]=np.where(delivered,assumptions["delivery_cost_per_order_sar"],0)
     d["payment_processing_cost_sar"]=np.where(delivered,d.final_amount_paid_sar*assumptions["payment_processing_rate"],0)
@@ -36,8 +37,10 @@ def main():
     orders=pd.read_csv(a.input); assumptions=json.loads(a.config.read_text(encoding="utf-8"))
     out=build_unit_economics(orders,assumptions);a.output_dir.mkdir(parents=True,exist_ok=True)
     out.to_csv(a.output_dir/"order_unit_economics_scenario.csv",index=False)
-    summary=out.groupby("city").agg(orders=("order_id","count"),delivered=("contribution_scenario_sar",lambda s:int((s!=0).sum())),
-       scenario_contribution_sar=("contribution_scenario_sar","sum"),avg_scenario_contribution_sar=("contribution_scenario_sar","mean")).reset_index()
+    summary=out.groupby("city").agg(orders=("order_id","count"),delivered=("is_delivered","sum"),
+       scenario_contribution_sar=("contribution_scenario_sar","sum")).reset_index()
+    delivered_avg=out.loc[out.is_delivered].groupby("city").contribution_scenario_sar.mean().rename("avg_scenario_contribution_per_delivered_order")
+    summary=summary.merge(delivered_avg,on="city",how="left")
     summary["provenance"]="illustrative_assumption_scenario_not_actual_profit"
     summary.to_csv(a.output_dir/"unit_economics_scenario_by_city.csv",index=False)
     print("Wrote scenario economics. These are not actual revenue, margin or profit.")
