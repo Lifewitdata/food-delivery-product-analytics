@@ -115,3 +115,18 @@ Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTes
 Seeded dates agree with source month but not source weekday. Every restaurant has orders across all three cities, irrespective of its name; restaurant ranking therefore excludes city. Customer IDs are randomly generated, and the flat cohort curve is not evidence of real retention. Events always start with a completed browse/cart/checkout chain, so no pre-checkout conversion can be estimated. The supplied notes incorrectly attribute all 150 missing tips/ratings to cancellation: only 19 are cancelled. Keep nulls; do not fill zero. Refunds are counted, not deducted from GMV, because refund amounts are absent.
 
 No live Redshift, BigQuery, Looker, AWS, or R work is claimed. Public publishing remains your decision, after confirming dataset redistribution rights.
+
+## Product analytics extensions (new branch)
+
+This improvement branch adds an additive, local analytics layer without replacing the original analysis:
+
+- Session-level event generator and funnel summary: `python -m scripts.build_product_sessions` then `python -m scripts.analyze_product_funnel`.
+- Scenario unit economics: `python -m scripts.build_unit_economics`. Assumptions live in `config/unit_economics_assumptions.json`; outputs are illustrative and are not actual profit.
+- Customer recency/frequency and cohort descriptors: `python -m scripts.build_customer_lifecycle`.
+- Retrospective delivery ETA exception queue: `python -m scripts.build_delivery_risk`.
+- Run all additive outputs in order: `python -m scripts.run_product_analytics`.
+- New Streamlit pages are under `dashboard/pages/`; the original four-tab dashboard remains intact.
+- CI workflow: `.github/workflows/analytics-ci.yml`.
+- Experiment design requirements: [docs/EXPERIMENTATION_PLAYBOOK.md](docs/EXPERIMENTATION_PLAYBOOK.md).
+
+The generated non-purchasing sessions are synthetic demonstrations, not measured customer behaviour. Unit-economics outputs use explicit placeholder assumptions and must not be represented as finance actuals. Customer segments are descriptive, not a validated churn model. Delivery exceptions are retrospective and not live dispatch alerts.
