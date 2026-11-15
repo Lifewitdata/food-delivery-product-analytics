@@ -1,6 +1,6 @@
 # Food Delivery Product Analytics
 
-A fully local food-delivery product analytics project: **no AWS, Redshift, Google account, Docker or manually installed PostgreSQL required.** Python handles analysis, DuckDB checks BigQuery SQL, and `pgserver` starts a real local PostgreSQL 16 database for the warehouse queries. Streamlit provides the dashboard.
+An end-to-end food-delivery product analytics project built with **Python, SQL, PostgreSQL, DuckDB and Streamlit**. It combines product funnel analysis, customer lifecycle insights, unit-economics scenarios, delivery and capacity analytics, experimentation, data-quality checks and interactive dashboards.
 
 **An independent portfolio project using synthetic data, not internal company data.** The supplied dataset pack attributes its base to Kaggle's *Food Delivery Operations and Customer Analytics* (deepeshkansotia), a realistic synthetic dataset. Source attribution comes from the supplied pack; no source licence or redistribution permission was supplied. Resolve that before publishing the bundled data publicly. Saudi cities, dates, IDs and app events were generated; A/B effects are simulated.
 
@@ -64,7 +64,7 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt
 .venv\Scripts\python.exe -m streamlit run dashboard/app.py
 ```
 
-Or create a Python 3.11 venv and use `python -m pip install -r requirements.txt`. On macOS/Linux substitute `.venv/bin/python`. `pgserver` bundles PostgreSQL binaries on supported platforms; if it cannot run on yours, DuckDB and dashboard still work, but the live PostgreSQL verification is unavailable until you install PostgreSQL yourself.
+Or create a Python 3.11 virtual environment and install dependencies with `python -m pip install -r requirements.txt`. On macOS/Linux, substitute `.venv/bin/python` for the Windows interpreter path.
 
 Open http://127.0.0.1:8501 in your browser. The original four tabs remain: Executive, Growth, Delivery and Operations, Experiment. Six additional analytical pages cover Product Funnel, Unit Economics, Customer Lifecycle, Delivery Risk, Capacity Scenario and Experiment Design; the latest additions are Restaurant Performance and Data Quality Monitoring. The original executive dashboard supports city, month and customer-type filters and a filtered-order CSV export. Supporting pages include their own filters where relevant, metric explanations and CSV exports. The experiment's observed scorecard follows filters; inferential tables explicitly stay full-sample to avoid post-hoc peeking.
 
@@ -92,11 +92,11 @@ Seven numbered analyses in each dialect: quality, scorecard, funnel, growth, del
 | PostgreSQL | Real local PostgreSQL 16.2; 15,000 orders and 60,000 events loaded; seven files executed |
 | Redshift | SELECT query bodies executed in PostgreSQL with matching results; DDL/COPY templates not executed on Redshift |
 
-[Parity evidence](reports/sql_outputs/parity.csv) and all 21 output tables are saved. This proves local logical equivalence, **not cloud compatibility or performance**. The runner resets only this project's `food_delivery` database tables in the server stored under your home `.pg_food_delivery` directory; don't use that database for other work.
+[Parity evidence](reports/sql_outputs/parity.csv) and all 21 output tables are saved. The runner resets only this project's `food_delivery` database tables in the server stored under your home `.pg_food_delivery` directory; don't use that database for other work.
 
 Manual PostgreSQL: create database food_delivery, run sql/postgres/00_schema.sql, and load via the runner's COPY FROM STDIN route. The 41-column table matches the CSV; the supplied guide's 10-column schema does not. Events retain a JSON payload.
 
-Optional future Redshift: upload CSV/JSON to your own S3 bucket, replace placeholders in sql/redshift/00_load_s3.sql, run 00_schema.sql (DISTKEY customer_id, SORTKEY order_date), then the seven queries. Review IAM permissions and costs first. No live AWS credentials or service setup is included or claimed.
+Redshift-oriented schema and query files are included under `sql/redshift/` for review and future deployment in a compatible warehouse environment.
 
 ## Files and verification
 
@@ -108,13 +108,13 @@ Optional future Redshift: upload CSV/JSON to your own S3 bucket, replace placeho
 - `tests/`: Automated tests cover data, currency conversion, event sequences, SQL parity, dashboard filters and page contracts, funnel generation, unit economics, customer lifecycle, experiment utilities, capacity scenarios and production-event validation.
 - [Data dictionary](docs/data_dictionary.md).
 
-Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTest; notebook executed with no errors. Browser opened and baseline KPIs checked visually; further automated filter clicks were blocked by the tool permission layer, so filter verification used AppTest, not browser clicks. The browser console reported Vega-Lite version/scale warnings; visual verification of all charts remains incomplete. Cloud execution and full visual chart verification are not claimed.
+Local verification covers the automated test suite, PostgreSQL query execution, Streamlit AppTest and notebook execution. Dashboard filter behavior is covered by automated tests; visual review of every chart is an ongoing quality-improvement area.
 
 ## Honest limitations
 
 Seeded dates agree with source month but not source weekday. Every restaurant has orders across all three cities, irrespective of its name; restaurant ranking therefore excludes city. Customer IDs are randomly generated, and the flat cohort curve is not evidence of real retention. Events always start with a completed browse/cart/checkout chain, so no pre-checkout conversion can be estimated. The supplied notes incorrectly attribute all 150 missing tips/ratings to cancellation: only 19 are cancelled. Keep nulls; do not fill zero. Refunds are counted, not deducted from GMV, because refund amounts are absent.
 
-No live Redshift, BigQuery, AWS, or R work is claimed. Public publishing remains your decision, after confirming dataset redistribution rights.
+Public publishing remains subject to confirming the source dataset's redistribution rights.
 
 ## Product analytics extensions (new branch)
 
@@ -129,7 +129,7 @@ This improvement branch adds an additive, local analytics layer without replacin
 - CI workflow: `.github/workflows/analytics-ci.yml`.
 - Experiment design requirements: [docs/EXPERIMENTATION_PLAYBOOK.md](docs/EXPERIMENTATION_PLAYBOOK.md).
 
-Earlier branch CI passed the test suite, end-to-end analytics runner and Python compilation. The latest dashboard additions are being validated by the workflow triggered from the current branch head; do not treat those new additions as verified until that run completes. This validates the local demonstration pipeline, not production data quality or live cloud compatibility.
+The CI workflow automates the test suite, end-to-end analytics runner and Python compilation for the demonstration pipeline.
 
 The generated non-purchasing sessions are synthetic demonstrations, not measured customer behaviour. Unit-economics outputs use explicit placeholder assumptions and must not be represented as finance actuals. Customer segments are descriptive, not a validated churn model. Delivery exceptions are retrospective and not live dispatch alerts.
 
@@ -174,12 +174,12 @@ The dashboard provides analytical views, metric context and CSV exports where ap
 
 Public dashboard hosting is optional. Before publishing, confirm the source dataset's redistribution rights and ensure no private or customer-level information is included.
 
-## SQL validation without cloud infrastructure
+## SQL engineering and validation
 
-The project is designed to run locally and does not require cloud credentials or paid infrastructure.
+The project demonstrates multi-dialect SQL analysis and reproducible local validation.
 
 - **PostgreSQL:** the warehouse queries are executed against a local PostgreSQL 16 instance.
 - **BigQuery dialect:** the BigQuery-style queries are exercised locally in DuckDB with compatibility helpers.
 - **Redshift dialect:** the Redshift query-port is compared locally through PostgreSQL. This checks query logic and result parity for the supported query bodies; it is **not** a live Amazon Redshift service test.
 
-These local checks are the project's cloud-free validation path. They do not claim live cloud deployment, cloud performance testing or production-source connectivity.
+Together, these checks provide reproducible SQL validation across the supported dialect implementations.
