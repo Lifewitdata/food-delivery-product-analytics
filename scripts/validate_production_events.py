@@ -26,13 +26,14 @@ def validate_events(events:pd.DataFrame,schema:dict)->tuple[pd.DataFrame,pd.Data
     aliases=schema.get("event_name_aliases",{})
     d["event_name_normalized"]=d.event_name.astype("string").str.strip().str.lower().map(lambda x:aliases.get(x,x))
     allowed=set(schema["canonical_events"])
+    duplicate_ids=d.event_id.notna() & d.event_id.duplicated(keep=False)
     errors=[]
-    for idx,row in d.iterrows():
+    for pos,(_,row) in enumerate(d.iterrows()):
         issues=[]
         for col in ["event_id","session_id","event_name","event_timestamp","platform","city"]:
             if pd.isna(row[col]) or str(row[col]).strip()=="":
                 issues.append(f"missing_{col}")
-        if not pd.isna(row.event_id) and d.event_id.eq(row.event_id).sum()>1:
+        if duplicate_ids.iloc[pos]:
             issues.append("duplicate_event_id")
         if pd.isna(row.event_timestamp_parsed): issues.append("invalid_event_timestamp")
         else:
