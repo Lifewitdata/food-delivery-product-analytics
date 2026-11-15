@@ -132,3 +132,8 @@ This improvement branch adds an additive, local analytics layer without replacin
 Latest branch CI: 36 tests passed; the end-to-end analytics runner and Python compilation passed. See [the successful workflow](https://github.com/Lifewitdata/food-delivery-product-analytics/actions/runs/43713151837). This validates the local demonstration pipeline, not production data quality or live cloud compatibility.
 
 The generated non-purchasing sessions are synthetic demonstrations, not measured customer behaviour. Unit-economics outputs use explicit placeholder assumptions and must not be represented as finance actuals. Customer segments are descriptive, not a validated churn model. Delivery exceptions are retrospective and not live dispatch alerts.
+
+
+## Production customer-event ingestion
+
+A privacy-conscious CSV event contract and validator are available for a real anonymised product-event export. See [Production Event Onboarding](docs/PRODUCTION_EVENT_ONBOARDING.md), [event schema](config/production_event_schema.json), and [CSV template](data/templates/production_events_template.csv). Validate a real export with `python -m scripts.validate_production_events --input /secure/path/events_export.csv`. Do not commit real customer data to this repository. No production customer data is included; the existing funnel generator remains explicitly synthetic.
