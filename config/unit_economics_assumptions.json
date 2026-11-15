@@ -1,0 +1,10 @@
+{
+  "currency": "SAR",
+  "commission_rate": 0.18,
+  "delivery_cost_per_order_sar": 12.0,
+  "payment_processing_rate": 0.025,
+  "promo_subsidy_rate_of_discount": 1.0,
+  "refund_rate_of_refunded_order_value": 1.0,
+  "assumption_status": "illustrative_scenario_not_observed_financial_data",
+  "notes": "Replace all rates and costs with finance-approved actuals before making business decisions. Commission is applied to basket value; delivery cost is a flat scenario assumption; payment fee is applied to final paid amount."
+}
