@@ -1,15 +1,36 @@
 {
   "schema_version": "1.0",
-  "required_columns": ["event_id", "session_id", "event_name", "event_timestamp", "platform", "city"],
-  "optional_columns": ["customer_id", "anonymous_id", "order_id", "properties_json"],
-  "canonical_events": ["app_open", "restaurant_view", "add_to_cart", "checkout_started", "order_placed", "payment_failed", "order_cancelled"],
+  "required_columns": [
+    "event_id",
+    "session_id",
+    "event_name",
+    "event_timestamp",
+    "platform",
+    "city"
+  ],
+  "optional_columns": [
+    "customer_id",
+    "anonymous_id",
+    "order_id",
+    "properties_json"
+  ],
+  "canonical_events": [
+    "app_open",
+    "restaurant_view",
+    "add_to_cart",
+    "checkout_started",
+    "order_placed",
+    "payment_failed",
+    "order_cancelled",
+    "order_delivered"
+  ],
   "event_name_aliases": {
     "browse": "app_open",
     "view_restaurant": "restaurant_view",
     "add_to_cart": "add_to_cart",
     "checkout": "checkout_started",
     "purchase": "order_placed",
-    "delivered": "order_placed"
+    "delivered": "order_delivered"
   },
   "timestamp_requirement": "ISO-8601 with timezone offset; UTC recommended",
   "identity_requirement": "session_id required; customer_id and anonymous_id may be null or pseudonymous",
