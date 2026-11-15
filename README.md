@@ -105,7 +105,7 @@ Optional future Redshift: upload CSV/JSON to your own S3 bucket, replace placeho
 - `notebooks/`: executed exploratory analysis, conversion checks, quality, growth, delivery, retention, simulation and statistics.
 - `reports/`: additive monthly KPIs, DQ, nine findings, A/B results, seven PNGs, SQL outputs and slide deck.
 - `sql/`: 7 analyses x 3 dialects plus PostgreSQL/Redshift schema/load templates.
-- `tests/`: 21 tests covering data, currency conversion, event sequences, SQL parity, and dashboard filters.
+- `tests/`: 36 automated tests covering data, currency conversion, event sequences, SQL parity, dashboard filters, funnel generation, unit economics, customer lifecycle, experiment utilities and capacity scenarios.
 - [Data dictionary](docs/data_dictionary.md); [Looker Studio specification](docs/looker_studio_spec.md) (spec only).
 
 Verified locally: 21 tests pass including actual PostgreSQL and Streamlit AppTest; notebook executed with no errors. Browser opened and baseline KPIs checked visually; further automated filter clicks were blocked by the tool permission layer, so filter verification used AppTest, not browser clicks. The browser console reported Vega-Lite version/scale warnings; visual verification of all charts remains incomplete. Cloud execution and full visual chart verification are not claimed.
@@ -128,5 +128,7 @@ This improvement branch adds an additive, local analytics layer without replacin
 - New Streamlit pages are under `dashboard/pages/`; the original four-tab dashboard remains intact.
 - CI workflow: `.github/workflows/analytics-ci.yml`.
 - Experiment design requirements: [docs/EXPERIMENTATION_PLAYBOOK.md](docs/EXPERIMENTATION_PLAYBOOK.md).
+
+Latest branch CI: 36 tests passed; the end-to-end analytics runner and Python compilation passed. See [the successful workflow](https://github.com/Lifewitdata/food-delivery-product-analytics/actions/runs/43713151837). This validates the local demonstration pipeline, not production data quality or live cloud compatibility.
 
 The generated non-purchasing sessions are synthetic demonstrations, not measured customer behaviour. Unit-economics outputs use explicit placeholder assumptions and must not be represented as finance actuals. Customer segments are descriptive, not a validated churn model. Delivery exceptions are retrospective and not live dispatch alerts.
