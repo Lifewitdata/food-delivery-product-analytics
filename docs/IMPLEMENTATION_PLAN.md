@@ -47,3 +47,20 @@ Important: generated non-purchasing sessions enable funnel engineering demonstra
 5. Add delivery exception and capacity scenarios.
 6. Integrate tested outputs into Streamlit and add export/drill-down workflows.
 7. Add CI and clean-environment reproducibility checks.
+
+
+## Implemented in the improvement branch
+
+- Session event generation with synthetic non-converters and explicit provenance.
+- Session-level funnel aggregation and DuckDB SQL example.
+- Assumption-driven contribution scenario with editable JSON inputs.
+- Customer recency, frequency, spend and cohort descriptors.
+- Retrospective ETA exception analysis.
+- Hourly delivery capacity scenario with an explicit rider-supply assumption.
+- Customer-grain two-arm experiment analysis and sample-size calculation utilities.
+- New Streamlit pages for funnel, unit economics, customer lifecycle, delivery risk, capacity and experiment design.
+- GitHub Actions test/compile workflow.
+
+## Validation status
+
+The original test suite plus the new foundation tests passed on an intermediate branch commit. The additional experiment and capacity tests and the final dashboard page still require the latest branch workflow to finish successfully. Do not describe the branch as fully validated until the latest commit's CI is green and the end-to-end runner has been exercised against the full repository dataset.
