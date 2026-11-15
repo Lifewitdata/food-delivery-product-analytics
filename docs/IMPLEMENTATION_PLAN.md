@@ -1,67 +1,40 @@
-# Product Analytics Platform — implementation plan
+# Product Analytics Platform — implementation status
 
-## Current status
+## Delivered on the improvement branch
 
-The additive implementation branch is technically validated:
-- GitHub Actions: 36 tests passed.
-- End-to-end local analytics runner completed successfully against the repository dataset.
-- Python modules compiled successfully.
-- Latest validation run: https://github.com/Lifewitdata/food-delivery-product-analytics/actions/runs/43713151837
+- Additive product analytics pipeline: session funnel, assumption-driven unit economics, customer lifecycle descriptors, retrospective delivery-risk queue and hourly capacity scenarios.
+- Customer-level experiment analysis utilities: sample-size calculation, two-arm comparison, sample-ratio mismatch check and confidence interval.
+- Production-event CSV contract, template, validator, quarantine output and delivered-event semantics. The validator is ready for an anonymised real export; no real production export has been supplied.
+- Streamlit dashboard: original Executive, Growth, Delivery and Experiment tabs retained; added Product Funnel, Unit Economics, Customer Lifecycle, Delivery Risk, Capacity Scenario, Experiment Design, Restaurant Performance and Data Quality Monitoring pages.
+- Dashboard exports: filtered order export, restaurant scorecard export and data-quality results export; relevant pages state metric definitions and data provenance.
+- GitHub Actions workflow runs tests, end-to-end analytics pipeline and Python compilation.
+- All changes remain on `improvement/product-analytics-foundation`; `main` is untouched.
 
-This validates code paths and reproducibility on the supplied dataset. It does not validate production business assumptions, live cloud services, real customer behaviour, or production deployment.
+## Validation boundaries
 
-## Completed on this branch
+- The existing repository CI runs confirmed successful tests, pipeline execution and Python compilation for the production-event validator changes.
+- The two newest dashboard pages and latest dashboard integration changes require the CI run on the current branch head to finish before they can be called verified.
+- Redshift SQL query bodies are locally compared through PostgreSQL 16. This is dialect-port validation, not execution on AWS Redshift.
+- BigQuery SQL is exercised locally in DuckDB, not a live BigQuery project.
+- Streamlit is the implemented BI deliverable. Looker Studio is not required and has not been deployed.
+- No production event export, Finance-approved cost data, live rider shift feed or dispatch feed is available. These are external source-data dependencies; code cannot manufacture them honestly.
+- Seeded order, customer, restaurant and rider identifiers are demonstration data. Non-converting sessions and unit economics/capacity assumptions are explicitly synthetic or illustrative.
 
-| Workstream | Delivered | Validation / limitation |
-|---|---|---|
-| Session funnel | Session generator, explicitly labelled simulated non-buyers, funnel metrics, SQL and dashboard | Runs end-to-end; conversion rates are not real platform rates |
-| Unit economics | Configurable commission, delivery, payment, promotion and refund scenario | Runs end-to-end; assumptions are illustrative, not Finance actuals |
-| Customer lifecycle | Customer recency, frequency, spend, repeat flag and cohort descriptors | Descriptive only; no validated churn model or predictive LTV |
-| Experimentation | Sample-size helper, customer-grain two-arm analysis, SRM check, CI and playbook | Utilities tested; no real randomised experiment data supplied |
-| Delivery operations | Retrospective ETA exception queue and dashboard | Not live dispatch or rider telemetry |
-| Capacity | Hourly demand/capacity scenario and dashboard | Rider supply is an explicit scenario input, not actual shifts |
-| Dashboard | Original dashboard preserved; six additional Streamlit pages | Local code is present; public deployment and complete visual QA remain |
-| Automation | GitHub Actions tests, compile and end-to-end pipeline | Latest workflow passed |
-| Documentation | Experimentation playbook, assumptions and implementation notes | Source licensing and full production metric governance still need confirmation |
+## Remaining external dependencies (not code defects)
 
-## Remaining work — ordered backlog
+1. Supply an anonymised production event export and confirm event semantics to replace simulated funnel sessions.
+2. Supply Finance-approved commission, delivery, payment, promotion and refund amounts to replace scenario assumptions.
+3. Supply actual rider shift/availability and dispatch timestamps to replace capacity assumptions and retrospective delivery flags.
+4. Confirm source dataset redistribution rights before public deployment or public sharing of bundled data.
+5. If cloud execution is specifically required, provide an authorised AWS Redshift/BigQuery environment; no credentials or paid cloud resources are assumed by this project.
 
-### P1 — Replace demonstration assumptions with trustworthy data
-1. Obtain genuine session/event data including sessions that did not place an order. The anonymised CSV contract, schema, template and quarantine validator are now committed; actual source export and tracking definitions are still required.
-2. Obtain Finance-approved commission, delivery cost, payment fee, promotion subsidy and refund amount data.
-3. Obtain stable customer, restaurant, rider, city/zone and timestamp dimensions with documented source lineage.
-4. Obtain actual rider shifts/availability and dispatch timestamps for capacity and SLA analysis.
-5. Confirm dataset redistribution and publication rights before publishing data or screenshots.
+## Run locally
 
-### P2 — Strengthen analytical depth
-1. Build customer cohort retention, repeat-purchase intervals and a leakage-safe churn baseline.
-2. Build LTV scenarios with clearly defined contribution margin and validation windows.
-3. Rebuild experiment reporting around a real eligibility and assignment/exposure table; pre-register primary metric and non-inferiority guardrails.
-4. Add zone/restaurant/rider operational root-cause analysis only where reliable identifiers and source fields support it.
-5. Add reconciliation and data-quality thresholds for every KPI output.
+```bash
+python -m scripts.run_product_analytics
+python -m pytest -q
+python -m scripts.run_sql
+streamlit run dashboard/app.py
+```
 
-### P3 — Productise the dashboard
-1. Run the Streamlit app locally and inspect all pages, filters, charts, empty states and downloadable outputs.
-2. Add consistent date/city/customer filters where the underlying grain supports them.
-3. Add metric definitions, data freshness, source provenance and assumptions to each relevant page.
-4. Add drill-down tables and exports for product, customer, finance and delivery exceptions.
-5. Deploy the dashboard to a hosting service only after checking access, secrets, data rights and operational cost.
-6. Build a live Looker Studio dashboard if that BI deliverable is required; the existing Looker file remains a specification, not a deployed dashboard.
-
-### P4 — Cloud and operational readiness
-1. Validate BigQuery SQL in an actual BigQuery project.
-2. Validate Redshift DDL, COPY, permissions and query execution in an actual AWS Redshift environment.
-3. Add scheduled refresh only after selecting a real data source and execution environment.
-4. Add monitoring, run history, failure alerts, data freshness checks and documented recovery.
-5. Add environment-specific deployment instructions and secret management.
-
-## How to run the current local demonstration
-
-    python -m scripts.run_product_analytics
-    streamlit run dashboard/app.py
-
-Generated non-purchasing sessions, financial assumptions and rider supply are explicitly simulated. Do not present these as observed business facts or production recommendations.
-
-## Merge readiness
-
-The improvement branch is CI-green, but should not be merged to main until the owner reviews the new outputs, confirms local dashboard behaviour, checks data rights and accepts the documented demonstration-data limitations. A passing CI workflow is necessary, not sufficient, for production readiness.
+The local runner and dashboard are the completed portfolio path. Live cloud deployment, live production ingestion and operational monitoring remain dependent on access to real systems and approved data; they are not represented as completed.
